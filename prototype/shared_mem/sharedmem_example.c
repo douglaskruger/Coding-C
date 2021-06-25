@@ -1,0 +1,71 @@
+/* =============================================================================
+   Copyright © 2019 Skynet Consulting Ltd.
+
+   This file is the property of Skynet Consulting Ltd. and shall not be reproduced,
+   copied, or used as the basis for the manufacture or sale of equipment without
+   the express written permission of Skynet Consulting Ltd.
+   =============================================================================
+*/
+static const char module_id[] __attribute__((used)) = "$Id: sharedmem_example.c$";
+
+/*
+ * Description:
+ * Basic shared memory program
+ */
+#include <sys/types.h>
+#include <sys/mman.h>
+#include <err.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
+/* Does not work on OS X, as you can't mmap over /dev/zero */
+int main(void)
+{
+        const char str1[] = "string 1";
+        const char str2[] = "string 2";
+        pid_t parpid = getpid(), childpid;
+        int fd = -1;
+        char *anon, *zero;
+
+        if ((fd = open("/dev/zero", O_RDWR, 0)) == -1)
+                err(1, "open");
+
+        anon = (char*)mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
+        zero = (char*)mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+
+        if (anon == MAP_FAILED || zero == MAP_FAILED)
+                errx(1, "either mmap");
+
+        strcpy(anon, str1);
+        strcpy(zero, str1);
+
+        printf("PID %d:\tanonymous %s, zero-backed %s\n", parpid, anon, zero);
+        switch ((childpid = fork())) {
+        case -1:
+                err(1, "fork");
+                /* NOTREACHED */
+        case 0:
+                childpid = getpid();
+                printf("CPID %d:\tanonymous %s, zero-backed %s\n", childpid, anon, zero);
+                sleep(3);
+
+                printf("CPID %d:\tanonymous %s, zero-backed %s\n", childpid, anon, zero);
+                munmap(anon, 4096);
+                munmap(zero, 4096);
+                close(fd);
+                return EXIT_SUCCESS;
+        }
+
+        sleep(2);
+        strcpy(anon, str2);
+        strcpy(zero, str2);
+
+        printf("PPID %d:\tanonymous %s, zero-backed %s\n", parpid, anon, zero);
+        munmap(anon, 4096);
+        munmap(zero, 4096);
+        close(fd);
+        return EXIT_SUCCESS;
+}

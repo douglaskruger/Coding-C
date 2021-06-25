@@ -1,0 +1,12 @@
+# Since the blah target is first, it is the default target and will be run when we run "make"
+blah: blah.o
+	cc blah.o -o blah
+
+blah.o: blah.c
+	cc -c blah.c -o blah.o
+
+blah.c:
+	echo "#include <stdio.h>\nint main() { printf(\"Helloworld!\"); }" > blah.c
+
+clean:
+	rm -f blah.o blah.c blah
