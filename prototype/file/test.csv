@@ -1,0 +1,5 @@
+#Register Name,Register Address,Register Size,Register Description,Data Representatation,Units,Range,Scaling,Example,Writeable,Notes
+Software_Version_Register_A,0,16 bits,Information on the overall software version for the System,Hex Value,n/a,n/a,n/a,0x0101,No,"High Byte = Major Version, Low Byte = Minor 1 Version"
+Software_Version_Register_B,1,16 bits,Information on the overall software version for the System,Hex Value,n/a,n/a,n/a,0x0501,No,"High Byte = Minor 2 Version, Low Byte = Minor 3 Version"
+Alarms_Bit_Field_Register_A_System,28,16 bits,Bit field used to indicate if Any of alarms 1 -> 16 are Asserted,Binary Value,n/a,0x0000 -> 0xFFFF,n/a,0x0020,No,0x0020 indicates alarm '6' is Asserted
+Alarms_Bit_Field_Register_B_System,29,16 bits,Bit field used to indicate if Any of alarms 17 -> 32 are Asserted,Binary Value,n/a,0x0000 -> 0xFFFF,n/a,0x0020,No,0x0020 indicates alarm '22' is Asserted
