@@ -51,7 +51,6 @@ main(int argc, char *argv[])
     }
 
     /* Set CPU time limit of target process; retrieve and display previous limit */
-
     if (prlimit(pid, RLIMIT_CPU, newp, &old) == -1)
         errExit("prlimit-1");
 
