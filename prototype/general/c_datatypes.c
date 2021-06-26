@@ -15,6 +15,9 @@ static const char module_id[] __attribute__((used)) = "$Id: c_datatype.c$";
 #include <stdlib.h>
 #include <stdbool.h>
 #include <float.h>
+#include <time.h>
+#include <sys/time.h>
+#include <sys/types.h>
 
 int main()
 {

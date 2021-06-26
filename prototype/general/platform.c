@@ -9,6 +9,7 @@
 static const char module_id[] __attribute__((used)) = "$Id: platform.c$";
 
 #include <stdio.h>
+#include <stdint.h>
 
 /**
  * Determination a platform of an operation system
