@@ -29,7 +29,7 @@ void catch_sigusr2(int sig_num)
     if (debug_level < 0) debug_level=0;
 }
 
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
     /* set the signal handlers */
     signal(SIGUSR1, catch_sigusr1);
@@ -42,4 +42,5 @@ void main(int argc, char* argv[])
         fflush(stdout);
 	sleep(2);
     }
+    return 0;
 }

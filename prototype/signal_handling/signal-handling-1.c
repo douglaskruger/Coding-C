@@ -7,6 +7,7 @@
    =============================================================================
 */
 #include <stdio.h>     /* standard I/O functions                         */
+#include <stdlib.h>    /* standard Lib functions                         */
 #include <unistd.h>    /* standard unix functions, like getpid()         */
 #include <signal.h>    /* signal name macros, and the signal() prototype */
 
