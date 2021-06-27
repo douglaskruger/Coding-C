@@ -8,7 +8,7 @@
 #   This system was written and tested against Debian 9/10 Linux
 #   =============================================================================
 all:	combination combination2 endian log matchbit \
-	math_test rightmostdiffbit secondRightmostzerobit sort 
+	math_test rightmostdiffbit secondrightmostzerobit sort 
 
 combination: combination.o
 	gcc combination.o -o combination
@@ -52,11 +52,11 @@ rightmostdiffbit: rightmostdiffbit.o
 rightmostdiffbit.o: rightmostdiffbit.c
 	gcc -c rightmostdiffbit.c -o rightmostdiffbit.o
 
-secondRightmostzerobit: secondRightmostzerobit.o
-	gcc secondRightmostzerobit.o -o secondRightmostzerobit
+secondrightmostzerobit: secondrightmostzerobit.o
+	gcc secondrightmostzerobit.o -o secondrightmostzerobit
 
-secondRightmostzerobit.o: secondRightmostzerobit.c
-	gcc -c secondRightmostzerobit.c -o secondRightmostzerobit.o
+secondrightmostzerobit.o: secondrightmostzerobit.c
+	gcc -c secondrightmostzerobit.c -o secondrightmostzerobit.o
 
 sort: sort.o
 	gcc sort.o -o sort
