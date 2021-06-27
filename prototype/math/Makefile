@@ -7,8 +7,8 @@
 #   =============================================================================
 #   This system was written and tested against Debian 9/10 Linux
 #   =============================================================================
-all:	combination combination2 endian log math_test \
-	sort 
+all:	combination combination2 endian log matchbit \
+	math_test rightmostdiffbit secondRightmostzerobit sort 
 
 combination: combination.o
 	gcc combination.o -o combination
@@ -34,11 +34,29 @@ log: log.o
 log.o: log.c
 	gcc -c log.c -o log.o
 
+matchbit: matchbit.o
+	gcc matchbit.o -o matchbit
+
+matchbit.o: matchbit.c
+	gcc -c matchbit.c -o matchbit.o
+
 math_test: math_test.o
 	gcc math_test.o -o math_test
 
 math_test.o: math_test.c
 	gcc -c math_test.c -o math_test.o
+
+rightmostdiffbit: rightmostdiffbit.o
+	gcc rightmostdiffbit.o -o rightmostdiffbit
+
+rightmostdiffbit.o: rightmostdiffbit.c
+	gcc -c rightmostdiffbit.c -o rightmostdiffbit.o
+
+secondRightmostzerobit: secondRightmostzerobit.o
+	gcc secondRightmostzerobit.o -o secondRightmostzerobit
+
+secondRightmostzerobit.o: secondRightmostzerobit.c
+	gcc -c secondRightmostzerobit.c -o secondRightmostzerobit.o
 
 sort: sort.o
 	gcc sort.o -o sort
@@ -48,5 +66,6 @@ sort.o: sort.c
 
 clean:
 	rm -f combination.o combination combination2.o combination2 \
-		endian.o endian log.o log math_test.o math_test \
+		endian.o endian log.o log matchbit.o matchbit \
+		math_test.o math_test rightmostdiffbit.o rightmostdiffbit secondRightmostzerobit.o secondRightmostzerobit \
 		sort.o sort 
