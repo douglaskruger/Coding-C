@@ -1,0 +1,69 @@
+        -:    0:Source:main.c
+        -:    0:Graph:main.gcno
+        -:    0:Data:main.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include <string.h>
+        -:    4:#include "expand.h"
+        -:    5:#include "parsexec.h"
+        -:    6:#include "turn.h"
+        -:    7:
+        -:    8:static char input[100] = "look around";
+        -:    9:
+       14:   10:static bool getFromFP(FILE *fp)
+        -:   11:{
+       14:   12:   bool ok = fgets(input, sizeof input, fp) != NULL;
+       14:   13:   if (ok) input[strcspn(input, "\n")] = '\0';
+       14:   14:   return ok;
+        -:   15:}
+        -:   16:
+       14:   17:static bool getInput(const char *filename)
+        -:   18:{
+        -:   19:   static FILE *fp = NULL;
+        -:   20:   bool ok;
+       14:   21:   if (fp == NULL)
+        -:   22:   {
+        1:   23:      if (filename != NULL) fp = fopen(filename, "rt");
+        1:   24:      if (fp == NULL) fp = stdin;
+        1:   25:   }
+       13:   26:   else if (fp == stdin && filename != NULL)
+        -:   27:   {
+    #####:   28:      FILE *out = fopen(filename, "at");
+    #####:   29:      if (out != NULL)
+        -:   30:      {
+    #####:   31:         fprintf(out, "%s\n", input);
+    #####:   32:         fclose(out);
+    #####:   33:      }
+    #####:   34:   }
+       14:   35:   printf("\n--> ");
+       14:   36:   ok = getFromFP(fp);
+       14:   37:   if (fp != stdin)
+        -:   38:   {
+       14:   39:      if (ok)
+        -:   40:      {
+       14:   41:         printf("%s\n", input);
+       14:   42:      }
+        -:   43:      else
+        -:   44:      {
+    #####:   45:         fclose(fp);
+    #####:   46:         ok = getFromFP(fp = stdin);
+        -:   47:      }
+       14:   48:   }
+       14:   49:   return ok;
+        -:   50:}
+        -:   51:
+       15:   52:static bool processInput(char *ptr, int size)
+        -:   53:{
+       15:   54:   return turn(parseAndExecute(expand(ptr, size)));
+        -:   55:}
+        -:   56:
+        1:   57:int main(int argc, char *argv[])
+        -:   58:{
+        1:   59:   (void)argc;
+        1:   60:   printf("Welcome to Little Cave Adventure.\n");
+       15:   61:   while (processInput(input, sizeof input) && getInput(argv[1]));
+        1:   62:   printf("\nBye!\n");
+        1:   63:   return 0;
+        -:   64:}

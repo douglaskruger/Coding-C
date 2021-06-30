@@ -1,0 +1,79 @@
+        -:    0:Source:match.c
+        -:    0:Graph:match.gcno
+        -:    0:Data:match.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <ctype.h>
+        -:    2:#include <stdbool.h>
+        -:    3:#include <string.h>
+        -:    4:#include "object.h"
+        -:    5:#include "misc.h"
+        -:    6:#include "match.h"
+        -:    7:
+        -:    8:const char *params[MAX_PARAMS];
+        -:    9:
+      522:   10:static const char *skipSpaces(const char *src)
+        -:   11:{
+      547:   12:   while (isspace(*src)) src++;
+      522:   13:   return src;
+        -:   14:}
+        -:   15:
+       26:   16:static const char *matchSpaces(const char *src)
+        -:   17:{
+       26:   18:   return *src == '\0' || isspace(*src) ? skipSpaces(src) : NULL;
+        -:   19:}
+        -:   20:
+     3055:   21:static const char *matchTerminal(const char *src, char terminal)
+        -:   22:{
+     6084:   23:   return terminal == ' '                    ? matchSpaces(src) :
+     3029:   24:          tolower(*src) == tolower(terminal) ? src + 1          : NULL;
+        -:   25:}
+        -:   26:
+     2325:   27:static const char *matchTag(const char *src, const char *tag, bool atEnd)
+        -:   28:{
+     4794:   29:   while (src != NULL && *tag != '\0')
+        -:   30:   {
+     2469:   31:      src = matchTerminal(src, *tag++);
+        -:   32:   }
+     2325:   33:   return atEnd && src != NULL && *skipSpaces(src) != '\0' ? NULL : src;
+        -:   34:}
+        -:   35:
+       31:   36:static const char *matchParam(const char *src, const char **par, bool loose)
+        -:   37:{
+       31:   38:   const char *restOfSrc = loose ? src + strlen(src) : NULL;
+        -:   39:   OBJECT *obj;
+     1023:   40:   for (obj = objs; obj < endOfObjs; obj++)
+        -:   41:   {
+        -:   42:      const char **tag;
+     3317:   43:      for (tag = obj->tags; *tag != NULL; tag++)
+        -:   44:      {
+     2325:   45:         const char *behindMatch = matchTag(src, *tag, loose);
+     2325:   46:         if (behindMatch != NULL && strlen(*tag) > strlen(*par))
+        -:   47:         {
+       13:   48:            *par = *tag;
+       13:   49:            restOfSrc = behindMatch;
+       13:   50:         }
+     2325:   51:      }
+      992:   52:   }
+       31:   53:   if (**par == '\0')
+        -:   54:   {
+       18:   55:      *par = src;
+       18:   56:   }
+       31:   57:   return restOfSrc;
+        -:   58:}
+        -:   59:
+      452:   60:bool matchCommand(const char *src, const char *pattern)
+        -:   61:{
+        -:   62:   const char **par;
+    12204:   63:   for (par = params; par < params + MAX_PARAMS; par++)
+        -:   64:   {
+    11752:   65:      *par = "";
+    11752:   66:   }
+     1069:   67:   for (src = skipSpaces(src); src != NULL && *pattern != '\0'; pattern++)
+        -:   68:   {
+      617:   69:      src = isupper(*pattern)
+       31:   70:               ? matchParam(src, paramByLetter(*pattern), pattern[1] == '\0')
+      586:   71:               : matchTerminal(src, *pattern);
+      617:   72:   }
+      452:   73:   return src != NULL && *skipSpaces(src) == '\0';
+        -:   74:}

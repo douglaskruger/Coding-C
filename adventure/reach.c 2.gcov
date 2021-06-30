@@ -1,0 +1,36 @@
+        -:    0:Source:reach.c
+        -:    0:Graph:reach.gcno
+        -:    0:Data:reach.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "misc.h"
+        -:    5:#include "noun.h"
+        -:    6:
+        3:    7:OBJECT *reachableObject(const char *intention, const char *noun)
+        -:    8:{
+        3:    9:   OBJECT *obj = getVisible(intention, noun);
+        3:   10:   switch (getDistance(player, obj))
+        -:   11:   {
+        -:   12:   case distSelf:
+    #####:   13:      printf("You should not be doing that to yourself.\n");
+    #####:   14:      break;
+        -:   15:   case distHeldContained:
+        -:   16:   case distHereContained:
+    #####:   17:      printf("You would have to get it from %s first.\n",
+    #####:   18:             obj->location->description);
+    #####:   19:      break;
+        -:   20:   case distOverthere:
+    #####:   21:      printf("Too far away, move closer please.\n");
+    #####:   22:      break;
+        -:   23:   case distNotHere:
+        -:   24:   case distUnknownObject:
+        -:   25:      // already handled by getVisible
+    #####:   26:      break;
+        -:   27:   default:
+        3:   28:      return obj;
+        -:   29:   }
+    #####:   30:   return NULL;
+        3:   31:}

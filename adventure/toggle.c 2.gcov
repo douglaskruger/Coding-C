@@ -1,0 +1,74 @@
+        -:    0:Source:toggle.c
+        -:    0:Graph:toggle.gcno
+        -:    0:Data:toggle.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "misc.h"
+        -:    5:#include "location.h"
+        -:    6:
+    #####:    7:static void swapLocations(const char *verb1, OBJECT *obj1,
+        -:    8:                          const char *verb2, OBJECT *obj2)
+        -:    9:{
+    #####:   10:   OBJECT *tmp = obj1->location;
+    #####:   11:   OBJECT *obj = tmp != NULL ? obj1 : obj2;
+    #####:   12:   const char *verb = tmp != NULL ? verb1 : verb2;
+    #####:   13:   obj1->location = obj2->location;
+    #####:   14:   obj2->location = tmp;
+    #####:   15:   if (verb != NULL) printf("You %s %s.\n", verb, obj->description);
+    #####:   16:}
+        -:   17:
+    #####:   18:void cannotBeOpened(void)    { printf("That cannot be opened.\n");    }
+    #####:   19:void cannotBeClosed(void)    { printf("That cannot be closed.\n");    }
+    #####:   20:void cannotBeLocked(void)    { printf("That cannot be locked.\n");    }
+    #####:   21:void cannotBeUnlocked(void)  { printf("That cannot be unlocked.\n");  }
+        -:   22:
+    #####:   23:void isAlreadyOpen(void)     { printf("That is already open.\n");     }
+    #####:   24:void isAlreadyClosed(void)   { printf("That is already closed.\n");   }
+    #####:   25:void isAlreadyLocked(void)   { printf("That is already locked.\n");   }
+    #####:   26:void isAlreadyUnlocked(void) { printf("That is already unlocked.\n"); }
+        -:   27:
+    #####:   28:void isStillOpen(void)       { printf("That is still open.\n");       }
+    #####:   29:void isStillLocked(void)     { printf("That is locked.\n");           }
+        -:   30:
+    #####:   31:void toggleDoorToBackroom(void)
+        -:   32:{
+    #####:   33:   swapLocations(NULL, openDoorToCave, NULL, closedDoorToCave);
+    #####:   34:   swapLocations("close", openDoorToBackroom, "open", closedDoorToBackroom);
+    #####:   35:}
+        -:   36:
+    #####:   37:void toggleDoorToCave(void)
+        -:   38:{
+    #####:   39:   swapLocations(NULL, openDoorToBackroom, NULL, closedDoorToBackroom);
+    #####:   40:   swapLocations("close", openDoorToCave, "open", closedDoorToCave);
+    #####:   41:}
+        -:   42:
+    #####:   43:void toggleBox(void)
+        -:   44:{
+    #####:   45:   swapLocations("close", openBox, "open", closedBox);
+    #####:   46:}
+        -:   47:
+    #####:   48:void toggleBoxLock(void)
+        -:   49:{
+    #####:   50:   if (keyForBox->location == player)
+        -:   51:   {
+    #####:   52:      swapLocations("lock", closedBox, "unlock", lockedBox);
+    #####:   53:   }
+        -:   54:   else
+        -:   55:   {
+    #####:   56:      printf("You don't have a key.\n");
+        -:   57:   }
+    #####:   58:}
+        -:   59:
+    #####:   60:void toggleLamp(void)
+        -:   61:{
+    #####:   62:   bool oldLit = isLit(player->location);
+    #####:   63:   swapLocations("turn off", lampOn, "turn on", lampOff);
+    #####:   64:   if (oldLit != isLit(player->location))
+        -:   65:   {
+    #####:   66:      printf("\n");
+    #####:   67:      executeLookAround();
+    #####:   68:   }
+    #####:   69:}

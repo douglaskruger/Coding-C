@@ -1,0 +1,111 @@
+        -:    0:Source:noun.c
+        -:    0:Graph:noun.gcno
+        -:    0:Data:noun.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include <string.h>
+        -:    4:#include "object.h"
+        -:    5:#include "misc.h"
+        -:    6:
+      210:    7:static bool objectHasTag(OBJECT *obj, const char *noun)
+        -:    8:{
+      210:    9:   if (noun != NULL && *noun != '\0')
+        -:   10:   {
+        -:   11:      const char **tag;
+      685:   12:      for (tag = obj->tags; *tag != NULL; tag++)
+        -:   13:      {
+      484:   14:         if (strcmp(*tag, noun) == 0) return true;
+      475:   15:      }
+      201:   16:   }
+      201:   17:   return false;
+      210:   18:}
+        -:   19:
+        -:   20:static OBJECT ambiguousNoun;
+        -:   21:
+        5:   22:static OBJECT *getObject(const char *noun, OBJECT *from, DISTANCE maxDistance)
+        -:   23:{
+        5:   24:   OBJECT *obj, *res = NULL;
+      165:   25:   for (obj = objs; obj < endOfObjs; obj++)
+        -:   26:   {
+      160:   27:      if (objectHasTag(obj, noun) && getDistance(from, obj) <= maxDistance)
+        -:   28:      {
+        5:   29:         res = res == NULL ? obj : &ambiguousNoun;
+        5:   30:      }
+      160:   31:   }
+        5:   32:   return res;
+        -:   33:}
+        -:   34:
+        5:   35:OBJECT *getVisible(const char *intention, const char *noun)
+        -:   36:{
+        5:   37:   OBJECT *obj = getObject(noun, player, distOverthere);
+        5:   38:   if (obj == NULL)
+        -:   39:   {
+    #####:   40:      if (getObject(noun, player, distNotHere) == NULL)
+        -:   41:      {
+    #####:   42:         printf("I don't understand %s.\n", intention);
+    #####:   43:      }
+    #####:   44:      else if (isLit(player->location))
+        -:   45:      {
+    #####:   46:         printf("You don't see any %s here.\n", noun);
+    #####:   47:      }
+        -:   48:      else
+        -:   49:      {
+    #####:   50:         printf("It's too dark.\n");
+        -:   51:      }
+    #####:   52:   }
+        5:   53:   else if (obj == &ambiguousNoun)
+        -:   54:   {
+    #####:   55:      printf("Please be specific about which %s you mean.\n", noun);
+    #####:   56:      obj = NULL;
+    #####:   57:   }
+        5:   58:   return obj;
+        -:   59:}
+        -:   60:
+    #####:   61:OBJECT *getPossession(OBJECT *from, const char *verb, const char *noun)
+        -:   62:{
+    #####:   63:   OBJECT *obj = NULL;
+    #####:   64:   if (from == NULL)
+        -:   65:   {
+    #####:   66:      printf("I don't understand who you want to %s.\n", verb);
+    #####:   67:   }
+    #####:   68:   else if ((obj = getObject(noun, from, distHeldContained)) == NULL)
+        -:   69:   {
+    #####:   70:      if (getObject(noun, player, distNotHere) == NULL)
+        -:   71:      {
+    #####:   72:         printf("I don't understand what you want to %s.\n", verb);
+    #####:   73:      }
+    #####:   74:      else if (from == player)
+        -:   75:      {
+    #####:   76:         printf("You are not holding any %s.\n", noun);
+    #####:   77:      }
+        -:   78:      else
+        -:   79:      {
+    #####:   80:         printf("There appears to be no %s you can get from %s.\n",
+    #####:   81:                noun, from->description);
+        -:   82:      }
+    #####:   83:   }
+    #####:   84:   else if (obj == &ambiguousNoun)
+        -:   85:   {
+    #####:   86:      printf("Please be specific about which %s you want to %s.\n",
+    #####:   87:             noun, verb);
+    #####:   88:      obj = NULL;
+    #####:   89:   }
+    #####:   90:   else if (obj == from)
+        -:   91:   {
+    #####:   92:      printf("You should not be doing that to %s.\n", obj->description);
+    #####:   93:      obj = NULL;
+    #####:   94:   }
+    #####:   95:   return obj;
+        -:   96:}
+        -:   97:
+        4:   98:OBJECT *getTopic(const char *noun)
+        -:   99:{
+        -:  100:   OBJECT *obj;
+       50:  101:   for (obj = objs; obj < endOfObjs; obj++)
+        -:  102:   {
+       50:  103:      if (objectHasTag(obj, noun)) return obj;
+       46:  104:   }
+    #####:  105:   return NULL;
+        4:  106:}

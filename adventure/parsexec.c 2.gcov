@@ -1,0 +1,94 @@
+        -:    0:Source:parsexec.c
+        -:    0:Graph:parsexec.gcno
+        -:    0:Data:parsexec.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <ctype.h>
+        -:    2:#include <stdbool.h>
+        -:    3:#include <stdio.h>
+        -:    4:#include "object.h"
+        -:    5:#include "misc.h"
+        -:    6:#include "match.h"
+        -:    7:#include "location.h"
+        -:    8:#include "inventory.h"
+        -:    9:#include "inventory2.h"
+        -:   10:#include "openclose.h"
+        -:   11:#include "onoff.h"
+        -:   12:#include "talk.h"
+        -:   13:#include "attack.h"
+        -:   14:#include "social.h"
+        -:   15:
+        -:   16:typedef struct
+        -:   17:{
+        -:   18:   const char *pattern;
+        -:   19:   int (*function)(void);
+        -:   20:} COMMAND;
+        -:   21:
+        1:   22:static int executeQuit(void)
+        -:   23:{
+        1:   24:   return -1;
+        -:   25:}
+        -:   26:
+    #####:   27:static int executeNoMatch(void)
+        -:   28:{
+    #####:   29:   const char *src = *params;
+        -:   30:   int len;
+    #####:   31:   for (len = 0; src[len] != '\0' && !isspace(src[len]); len++);
+    #####:   32:   if (len > 0) printf("I don't know how to '%.*s'.\n", len, src);
+    #####:   33:   return 0;
+        -:   34:}
+        -:   35:
+    #####:   36:static int executeWait(void)
+        -:   37:{
+    #####:   38:   printf("Some time passes...\n");
+    #####:   39:   return 1;
+        -:   40:}
+        -:   41:
+       15:   42:int parseAndExecute(const char *input)
+        -:   43:{
+        -:   44:   static const COMMAND commands[] =
+        -:   45:   {
+        -:   46:      { "quit"                , executeQuit       },
+        -:   47:      { "look"                , executeLookAround },
+        -:   48:      { "look around"         , executeLookAround },
+        -:   49:      { "look at A"           , executeLook       },
+        -:   50:      { "look A"              , executeLook       },
+        -:   51:      { "examine A"           , executeLook       },
+        -:   52:      { "go to A"             , executeGo         },
+        -:   53:      { "go A"                , executeGo         },
+        -:   54:      { "get A from B"        , executeGetFrom    },
+        -:   55:      { "get A"               , executeGet        },
+        -:   56:      { "put A in B"          , executePutIn      },
+        -:   57:      { "drop A in B"         , executePutIn      },
+        -:   58:      { "drop A"              , executeDrop       },
+        -:   59:      { "ask A from B"        , executeAskFrom    },
+        -:   60:      { "ask A"               , executeAsk        },
+        -:   61:      { "give A to B"         , executeGiveTo     },
+        -:   62:      { "give A"              , executeGive       },
+        -:   63:      { "inventory"           , executeInventory  },
+        -:   64:      { "open A"              , executeOpen       },
+        -:   65:      { "close A"             , executeClose      },
+        -:   66:      { "lock A"              , executeLock       },
+        -:   67:      { "unlock A"            , executeUnlock     },
+        -:   68:      { "turn on A"           , executeTurnOn     },
+        -:   69:      { "turn off A"          , executeTurnOff    },
+        -:   70:      { "turn A on"           , executeTurnOn     },
+        -:   71:      { "turn A off"          , executeTurnOff    },
+        -:   72:      { "talk with B about A" , executeTalkTo     },
+        -:   73:      { "talk about A with B" , executeTalkTo     },
+        -:   74:      { "talk about A"        , executeTalk       },
+        -:   75:      { "talk A"              , executeTalk       },
+        -:   76:      { "attack with B"       , executeAttack     },
+        -:   77:      { "attack A with B"     , executeAttack     },
+        -:   78:      { "attack A"            , executeAttack     },
+        -:   79:      { "wait"                , executeWait       },
+        -:   80:      { "play A"              , executePlay       },
+        -:   81:      { "emote A"             , executeEmote      },
+        -:   82:      { "say A"               , executeSay        },
+        -:   83:      { "whisper to B A"      , executeWhisper    },
+        -:   84:      { "A"                   , executeNoMatch    }
+        -:   85:   };
+        -:   86:   const COMMAND *cmd;
+      347:   87:   for (cmd = commands; !matchCommand(input, cmd->pattern); cmd++);
+       15:   88:   return (*cmd->function)();
+        -:   89:}

@@ -1,0 +1,49 @@
+        -:    0:Source:onoff.c
+        -:    0:Graph:onoff.gcno
+        -:    0:Data:onoff.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "match.h"
+        -:    5:#include "reach.h"
+        -:    6:#include "toggle.h"
+        -:    7:
+    #####:    8:int executeTurnOn(void)
+        -:    9:{
+    #####:   10:   OBJECT *obj = reachableObject("what you want to turn on", params[0]);
+    #####:   11:   if (obj != NULL)
+        -:   12:   {
+    #####:   13:      if (obj == lampOff)
+        -:   14:      {
+    #####:   15:         toggleLamp();
+    #####:   16:      }
+        -:   17:      else
+        -:   18:      {
+    #####:   19:         printf(obj == lampOn ? "The lamp is already on.\n"
+        -:   20:                              : "You cannot turn that on.\n");
+        -:   21:      }
+    #####:   22:      return 1;
+        -:   23:   }
+    #####:   24:   return 0;
+    #####:   25:}
+        -:   26:
+    #####:   27:int executeTurnOff(void)
+        -:   28:{
+    #####:   29:   OBJECT *obj = reachableObject("what you want to turn off", params[0]);
+    #####:   30:   if (obj != NULL)
+        -:   31:   {
+    #####:   32:      if (obj == lampOn)
+        -:   33:      {
+    #####:   34:         toggleLamp();
+    #####:   35:      }
+        -:   36:      else
+        -:   37:      {
+    #####:   38:         printf(obj == lampOff ? "The lamp is already off.\n"
+        -:   39:                               : "You cannot turn that off.\n");
+        -:   40:      }
+    #####:   41:      return 1;
+        -:   42:   }
+    #####:   43:   return 0;
+    #####:   44:}

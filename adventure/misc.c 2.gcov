@@ -1,0 +1,105 @@
+        -:    0:Source:misc.c
+        -:    0:Graph:misc.gcno
+        -:    0:Data:misc.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "misc.h"
+        -:    5:
+      631:    6:bool isHolding(OBJECT *container, OBJECT *obj)
+        -:    7:{
+      631:    8:   return validObject(obj) && obj->location == container;
+        -:    9:}
+        -:   10:
+       95:   11:bool isLit(OBJECT *target)
+        -:   12:{
+        -:   13:   OBJECT *obj;
+       95:   14:   if (validObject(target))
+        -:   15:   {
+       71:   16:      if (target->light > 0)
+        -:   17:      {
+       43:   18:         return true;
+        -:   19:      }
+      924:   20:      for (obj = objs; obj < endOfObjs; obj++)
+        -:   21:      {
+     1008:   22:         if (validObject(obj) && obj->light > 0 &&
+      112:   23:             (isHolding(target, obj) || isHolding(target, obj->location)))
+        -:   24:         {
+    #####:   25:            return true;
+        -:   26:         }
+      896:   27:      }
+       28:   28:   }
+       52:   29:   return false;
+       95:   30:}
+        -:   31:
+       26:   32:static bool isNoticeable(OBJECT *obj)
+        -:   33:{
+       52:   34:   return obj->location == player ||
+       26:   35:          isLit(obj) || isLit(obj->prospect) || isLit(player->location);
+        -:   36:}
+        -:   37:
+    #####:   38:OBJECT *getPassage(OBJECT *from, OBJECT *to)
+        -:   39:{
+    #####:   40:   if (from != NULL && to != NULL)
+        -:   41:   {
+        -:   42:      OBJECT *obj;
+    #####:   43:      for (obj = objs; obj < endOfObjs; obj++)
+        -:   44:      {
+    #####:   45:         if (isHolding(from, obj) && obj->prospect == to)
+        -:   46:         {
+    #####:   47:            return obj;
+        -:   48:         }
+    #####:   49:      }
+    #####:   50:   }
+    #####:   51:   return NULL;
+    #####:   52:}
+        -:   53:
+       10:   54:DISTANCE getDistance(OBJECT *from, OBJECT *to)
+        -:   55:{
+       20:   56:   return to == NULL                               ? distUnknownObject :
+       20:   57:          !validObject(to)                         ? distNotHere :
+       20:   58:          to == from                               ? distSelf :
+       20:   59:          isHolding(from, to)                      ? distHeld :
+       20:   60:          !isNoticeable(to)                        ? distNotHere :
+       20:   61:          isHolding(to, from)                      ? distLocation :
+       10:   62:          isHolding(from->location, to)            ? distHere :
+    #####:   63:          isHolding(from, to->location)            ? distHeldContained :
+    #####:   64:          isHolding(from->location, to->location)  ? distHereContained :
+    #####:   65:          getPassage(from->location, to) != NULL   ? distOverthere :
+        -:   66:                                                     distNotHere;
+        -:   67:}
+        -:   68:
+    #####:   69:OBJECT *actorHere(void)
+        -:   70:{
+        -:   71:   OBJECT *obj;
+    #####:   72:   for (obj = objs; obj < endOfObjs; obj++)
+        -:   73:   {
+    #####:   74:      if (isHolding(player->location, obj) && obj != player &&
+    #####:   75:          isNoticeable(obj) && obj->health > 0)
+        -:   76:      {
+    #####:   77:         return obj;
+        -:   78:      }
+    #####:   79:   }
+    #####:   80:   return NULL;
+    #####:   81:}
+        -:   82:
+        3:   83:int listObjectsAtLocation(OBJECT *location)
+        -:   84:{
+        3:   85:   int count = 0;
+        -:   86:   OBJECT *obj;
+       99:   87:   for (obj = objs; obj < endOfObjs; obj++)
+        -:   88:   {
+       96:   89:      if (obj != player && isHolding(location, obj) && isNoticeable(obj))
+        -:   90:      {
+       16:   91:         if (count++ == 0)
+        -:   92:         {
+        3:   93:            printf("%s:\n", location == player ? "You have"
+        3:   94:                                               : location->contents);
+        3:   95:         }
+       16:   96:         printf("%s\n", obj->description);
+       16:   97:      }
+       96:   98:   }
+        3:   99:   return count;
+        -:  100:}

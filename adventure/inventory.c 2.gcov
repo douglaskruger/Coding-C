@@ -1,0 +1,66 @@
+        -:    0:Source:inventory.c
+        -:    0:Graph:inventory.gcno
+        -:    0:Data:inventory.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "misc.h"
+        -:    5:#include "match.h"
+        -:    6:#include "noun.h"
+        -:    7:#include "move.h"
+        -:    8:
+        2:    9:int executeGet(void)
+        -:   10:{
+        2:   11:   OBJECT *obj = getVisible("what you want to get", params[0]);
+        2:   12:   switch (getDistance(player, obj))
+        -:   13:   {
+        -:   14:   case distSelf:
+    #####:   15:      printf("You should not be doing that to yourself.\n");
+    #####:   16:      return 1;
+        -:   17:   case distHeld:
+    #####:   18:      printf("You already have %s.\n", obj->description);
+    #####:   19:      return 0;
+        -:   20:   case distOverthere:
+    #####:   21:      printf("Too far away, move closer please.\n");
+    #####:   22:      return 0;
+        -:   23:   case distUnknownObject:
+        -:   24:      // already handled by getVisible
+    #####:   25:      return 0;
+        -:   26:   default:
+        2:   27:      if (obj->location != NULL && obj->location->health > 0)
+        -:   28:      {
+    #####:   29:         printf("You should ask %s nicely.\n", obj->location->description);
+    #####:   30:         return 1;
+        -:   31:      }
+        -:   32:      else
+        -:   33:      {
+        2:   34:         return moveObject(obj, player);
+        -:   35:      }
+        -:   36:   }
+        2:   37:}
+        -:   38:
+    #####:   39:int executeDrop(void)
+        -:   40:{
+    #####:   41:   return moveObject(getPossession(player, "drop", params[0]), player->location);
+        -:   42:}
+        -:   43:
+    #####:   44:int executeAsk(void)
+        -:   45:{
+    #####:   46:   return moveObject(getPossession(actorHere(), "ask", params[0]), player);
+        -:   47:}
+        -:   48:
+    #####:   49:int executeGive(void)
+        -:   50:{
+    #####:   51:   return moveObject(getPossession(player, "give", params[0]), actorHere());
+        -:   52:}
+        -:   53:
+    #####:   54:int executeInventory(void)
+        -:   55:{
+    #####:   56:   if (listObjectsAtLocation(player) == 0)
+        -:   57:   {
+    #####:   58:      printf("You are empty-handed.\n");
+    #####:   59:   }
+    #####:   60:   return 1;
+        -:   61:}

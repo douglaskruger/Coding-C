@@ -1,0 +1,80 @@
+        -:    0:Source:location.c
+        -:    0:Graph:location.gcno
+        -:    0:Data:location.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "misc.h"
+        -:    5:#include "match.h"
+        -:    6:#include "noun.h"
+        -:    7:
+        3:    8:int executeLookAround(void)
+        -:    9:{
+        3:   10:   if (isLit(player->location))
+        -:   11:   {
+        3:   12:      printf("You are in %s.\n", player->location->description);
+        3:   13:   }
+        -:   14:   else
+        -:   15:   {
+    #####:   16:      printf("It is very dark in here.\n");
+        -:   17:   }
+        3:   18:   listObjectsAtLocation(player->location);
+        3:   19:   return 1;
+        -:   20:}
+        -:   21:
+    #####:   22:int executeLook(void)
+        -:   23:{
+    #####:   24:   OBJECT *obj = getVisible("what you want to look at", params[0]);
+    #####:   25:   switch (getDistance(player, obj))
+        -:   26:   {
+        -:   27:   case distHereContained:
+    #####:   28:      printf("Hard to see, try to get it first.\n");
+    #####:   29:      return 0;
+        -:   30:   case distOverthere:
+    #####:   31:      printf("Too far away, move closer please.\n");
+    #####:   32:      return 0;
+        -:   33:   case distNotHere:
+    #####:   34:      printf("You don't see any %s here.\n", params[0]);
+    #####:   35:      return 0;
+        -:   36:   case distUnknownObject:
+        -:   37:      // already handled by getVisible
+    #####:   38:      return 0;
+        -:   39:   default:
+    #####:   40:      printf("%s\n", obj->details);
+    #####:   41:      listObjectsAtLocation(obj);
+    #####:   42:      return 1;
+        -:   43:   }
+    #####:   44:}
+        -:   45:
+    #####:   46:static void movePlayer(OBJECT *passage)
+        -:   47:{
+    #####:   48:   printf("%s\n", passage->textGo);
+    #####:   49:   if (passage->destination != NULL)
+        -:   50:   {
+    #####:   51:      player->location = passage->destination;
+    #####:   52:      printf("\n");
+    #####:   53:      executeLookAround();
+    #####:   54:   }
+    #####:   55:}
+        -:   56:
+    #####:   57:int executeGo(void)
+        -:   58:{
+    #####:   59:   OBJECT *obj = getVisible("where you want to go", params[0]);
+    #####:   60:   switch (getDistance(player, obj))
+        -:   61:   {
+        -:   62:   case distOverthere:
+    #####:   63:      movePlayer(getPassage(player->location, obj));
+    #####:   64:      return 1;
+        -:   65:   case distNotHere:
+    #####:   66:      printf("You don't see any %s here.\n", params[0]);
+    #####:   67:      return 0;
+        -:   68:   case distUnknownObject:
+        -:   69:      // already handled by getVisible
+    #####:   70:      return 0;
+        -:   71:   default:
+    #####:   72:      movePlayer(obj);
+    #####:   73:      return 1;
+        -:   74:   }
+    #####:   75:}
