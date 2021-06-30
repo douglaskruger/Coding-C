@@ -1,0 +1,14 @@
+play jack
+look around
+get club
+play jill
+look around
+say Where am I?
+whisper to jack I need a weapon.
+get dagger
+emote assume a fighting stance.
+attack guard
+play jill
+play jack
+attack guard
+quit

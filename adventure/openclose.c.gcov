@@ -1,0 +1,38 @@
+        -:    0:Source:openclose.c
+        -:    0:Graph:openclose.gcno
+        -:    0:Data:openclose.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "match.h"
+        -:    5:#include "reach.h"
+        -:    6:
+    #####:    7:int executeOpen(void)
+        -:    8:{
+    #####:    9:   OBJECT *obj = reachableObject("what you want to open", params[0]);
+    #####:   10:   if (obj != NULL) (*obj->open)();
+    #####:   11:   return obj != NULL ? 1 : 0;
+        -:   12:}
+        -:   13:
+    #####:   14:int executeClose(void)
+        -:   15:{
+    #####:   16:   OBJECT *obj = reachableObject("what you want to close", params[0]);
+    #####:   17:   if (obj != NULL) (*obj->close)();
+    #####:   18:   return obj != NULL ? 1 : 0;
+        -:   19:}
+        -:   20:
+    #####:   21:int executeLock(void)
+        -:   22:{
+    #####:   23:   OBJECT *obj = reachableObject("what you want to lock", params[0]);
+    #####:   24:   if (obj != NULL) (*obj->lock)();
+    #####:   25:   return obj != NULL ? 1 : 0;
+        -:   26:}
+        -:   27:
+    #####:   28:int executeUnlock(void)
+        -:   29:{
+    #####:   30:   OBJECT *obj = reachableObject("what you want to unlock", params[0]);
+    #####:   31:   if (obj != NULL) (*obj->unlock)();
+    #####:   32:   return obj != NULL ? 1 : 0;
+        -:   33:}

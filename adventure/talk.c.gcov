@@ -1,0 +1,62 @@
+        -:    0:Source:talk.c
+        -:    0:Graph:talk.gcno
+        -:    0:Data:talk.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "misc.h"
+        -:    5:#include "match.h"
+        -:    6:#include "noun.h"
+        -:    7:#include "reach.h"
+        -:    8:
+    #####:    9:static int talk(const char *about, OBJECT *to)
+        -:   10:{
+    #####:   11:   OBJECT *topic = getTopic(about);
+    #####:   12:   if (topic == NULL)
+        -:   13:   {
+    #####:   14:      printf("I don't understand what you want to talk about.\n");
+    #####:   15:      return 0;
+        -:   16:   }
+        -:   17:   else
+        -:   18:   {
+    #####:   19:      printf("You hear %s say: '%s'\n",
+    #####:   20:             to->description,
+    #####:   21:             topic == to ? "I don't want to talk about myself."
+    #####:   22:                         : topic->gossip);
+    #####:   23:      return 1;
+        -:   24:   }
+    #####:   25:}
+        -:   26:
+    #####:   27:int executeTalk(void)
+        -:   28:{
+    #####:   29:   OBJECT *to = actorHere();
+    #####:   30:   if (to != NULL)
+        -:   31:   {
+    #####:   32:      return talk(params[0], to);
+        -:   33:   }
+        -:   34:   else
+        -:   35:   {
+    #####:   36:      printf("There is nobody here to talk to.\n");
+    #####:   37:      return 0;
+        -:   38:   }
+    #####:   39:}
+        -:   40:
+    #####:   41:int executeTalkTo(void)
+        -:   42:{
+    #####:   43:   OBJECT *to = reachableObject("who to talk to", params[1]);
+    #####:   44:   if (to != NULL)
+        -:   45:   {
+    #####:   46:      if (to->health > 0)
+        -:   47:      {
+    #####:   48:         return talk(params[0], to);
+        -:   49:      }
+        -:   50:      else
+        -:   51:      {
+    #####:   52:         printf("There is no response from %s.\n", to->description);
+    #####:   53:         return 1;
+        -:   54:      }
+        -:   55:   }
+    #####:   56:   return 0;
+    #####:   57:}

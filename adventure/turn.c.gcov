@@ -1,0 +1,85 @@
+        -:    0:Source:turn.c
+        -:    0:Graph:turn.gcno
+        -:    0:Data:turn.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "misc.h"
+        -:    5:#include "location.h"
+        -:    6:#include "damage.h"
+        -:    7:
+        2:    8:static OBJECT *findBestWeaponAround(OBJECT *actor, OBJECT *weapon)
+        -:    9:{
+        -:   10:   OBJECT *obj;
+       66:   11:   for (obj = objs; obj < endOfObjs; obj++)
+        -:   12:   {
+       64:   13:      if (isHolding(actor->location, obj) && obj->impact < weapon->impact)
+        -:   14:      {
+    #####:   15:         weapon = obj;
+    #####:   16:      }
+       64:   17:   }
+        2:   18:   return weapon;
+        -:   19:}
+        -:   20:
+       28:   21:static void actorTakingTurn(OBJECT *actor)
+        -:   22:{
+       28:   23:   if (isHolding(player->location, actor) && actor->trust < 0)
+        -:   24:   {
+        2:   25:      OBJECT *weapon = getOptimalWeapon(actor);
+        2:   26:      OBJECT *best = findBestWeaponAround(actor, weapon);
+        2:   27:      if (weapon == best)
+        -:   28:      {
+        2:   29:         dealDamage(actor, weapon, player);
+        2:   30:      }
+        -:   31:      else
+        -:   32:      {
+    #####:   33:         best->location = actor;
+    #####:   34:         printf("You see %s pick up %s.\n",
+    #####:   35:                actor->description, best->description);
+        -:   36:      }
+        2:   37:   }
+       28:   38:}
+        -:   39:
+    #####:   40:static void depleteLight(OBJECT *obj, int time)
+        -:   41:{
+    #####:   42:   if ((obj->light -= time) <= 0 &&
+    #####:   43:       (isHolding(player, obj) || isHolding(player->location, obj)))
+        -:   44:   {
+    #####:   45:      printf("You see %s go out.\n", obj->description);
+    #####:   46:   }
+    #####:   47:}
+        -:   48:
+       15:   49:bool turn(int time)
+        -:   50:{
+       15:   51:   if (time > 0)
+        -:   52:   {
+        7:   53:      bool originallyLit = isLit(player->location);
+        7:   54:      OBJECT *obj, *originalLocation = player->location;
+      231:   55:      for (obj = objs; obj < endOfObjs; obj++)
+        -:   56:      {
+      224:   57:         if (validObject(obj) && obj->location != NULL)
+        -:   58:         {
+      147:   59:            if (obj->health > 0) actorTakingTurn(obj);
+      147:   60:            if (obj->light > 0) depleteLight(obj, time);
+      147:   61:         }
+      224:   62:      }
+        7:   63:      if (player->health <= 0)
+        -:   64:      {
+    #####:   65:         printf("You rise up to a more peaceful place...\n");
+    #####:   66:         player->location = heaven;
+    #####:   67:         player->health = 100;
+    #####:   68:         for (obj = objs; obj < endOfObjs; obj++)
+        -:   69:         {
+    #####:   70:            if (obj->location == player) obj->location = field;
+    #####:   71:         }
+    #####:   72:      }
+        7:   73:      if (originallyLit != isLit(player->location) ||
+        7:   74:          originalLocation != player->location)
+        -:   75:      {
+    #####:   76:         executeLookAround();
+    #####:   77:      }
+        7:   78:   }
+       15:   79:   return time >= 0;
+        -:   80:}

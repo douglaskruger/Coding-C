@@ -1,0 +1,95 @@
+        -:    0:Source:inventory2.c
+        -:    0:Graph:inventory2.gcno
+        -:    0:Data:inventory2.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "match.h"
+        -:    5:#include "noun.h"
+        -:    6:#include "move.h"
+        -:    7:#include "reach.h"
+        -:    8:
+    #####:    9:int executeGetFrom(void)
+        -:   10:{
+    #####:   11:   OBJECT *from = reachableObject("where to get that from", params[1]);
+    #####:   12:   if (from != NULL && getVisible("what you want to get", params[0]) != NULL)
+        -:   13:   {
+    #####:   14:      if (from->health > 0)
+        -:   15:      {
+    #####:   16:         printf("You should ask %s nicely.\n", from->description);
+    #####:   17:         return 1;
+        -:   18:      }
+        -:   19:      else
+        -:   20:      {
+    #####:   21:         return moveObject(getPossession(from, "get", params[0]), player);
+        -:   22:      }
+        -:   23:   }
+    #####:   24:   return 0;
+    #####:   25:}
+        -:   26:
+    #####:   27:int executePutIn(void)
+        -:   28:{
+    #####:   29:   OBJECT *obj = getPossession(player, "put", params[0]);
+    #####:   30:   if (obj != NULL)
+        -:   31:   {
+    #####:   32:      OBJECT *to = reachableObject("where to put that in", params[1]);
+    #####:   33:      if (to != NULL)
+        -:   34:      {
+    #####:   35:         if (to->health > 0)
+        -:   36:         {
+    #####:   37:            printf("You should offer that nicely to %s.\n", to->description);
+    #####:   38:            return 1;
+        -:   39:         }
+        -:   40:         else
+        -:   41:         {
+    #####:   42:            return moveObject(obj, to);
+        -:   43:         }
+        -:   44:      }
+    #####:   45:   }
+    #####:   46:   return 0;
+    #####:   47:}
+        -:   48:
+    #####:   49:int executeAskFrom(void)
+        -:   50:{
+    #####:   51:   OBJECT *from = reachableObject("who to ask that", params[1]);
+    #####:   52:   if (from != NULL)
+        -:   53:   {
+    #####:   54:      if (from->health > 0)
+        -:   55:      {
+    #####:   56:         if (getVisible("what you want to ask", params[0]) != NULL)
+        -:   57:         {
+    #####:   58:            return moveObject(getPossession(from, "ask", params[0]), player);
+        -:   59:         }
+    #####:   60:      }
+        -:   61:      else
+        -:   62:      {
+    #####:   63:         printf("There is no response from %s.\n", from->description);
+    #####:   64:         return 1;
+        -:   65:      }
+    #####:   66:   }
+    #####:   67:   return 0;
+    #####:   68:}
+        -:   69:
+    #####:   70:int executeGiveTo(void)
+        -:   71:{
+    #####:   72:   OBJECT *obj = getPossession(player, "give", params[0]);
+    #####:   73:   if (obj != NULL)
+        -:   74:   {
+    #####:   75:      OBJECT *to = reachableObject("who to give that to", params[1]);
+    #####:   76:      if (to != NULL)
+        -:   77:      {
+    #####:   78:         if (to->health > 0)
+        -:   79:         {
+    #####:   80:            return moveObject(obj, to);
+        -:   81:         }
+        -:   82:         else
+        -:   83:         {
+    #####:   84:            printf("No eagerness is shown by %s.\n", to->description);
+    #####:   85:            return 1;
+        -:   86:         }
+        -:   87:      }
+    #####:   88:   }
+    #####:   89:   return 0;
+    #####:   90:}

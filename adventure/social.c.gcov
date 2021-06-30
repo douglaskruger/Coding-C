@@ -1,0 +1,81 @@
+        -:    0:Source:social.c
+        -:    0:Graph:social.gcno
+        -:    0:Data:social.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "match.h"
+        -:    5:#include "noun.h"
+        -:    6:#include "reach.h"
+        -:    7:#include "location.h"
+        -:    8:
+        4:    9:int executePlay(void)
+        -:   10:{
+        4:   11:   OBJECT *obj = getTopic(params[0]);
+        4:   12:   if (obj == NULL)
+        -:   13:   {
+    #####:   14:      printf("I don't understand what character you want to play.\n");
+    #####:   15:   }
+        4:   16:   else if (obj == player)
+        -:   17:   {
+        1:   18:      printf("You already are %s.\n", player->description);
+        1:   19:   }
+        3:   20:   else if (obj == jack || obj == jill)
+        -:   21:   {
+        3:   22:      player = obj;
+        3:   23:      printf("You are %s. %s\n", player->description, player->details);
+        3:   24:   }
+        -:   25:   else
+        -:   26:   {
+    #####:   27:      printf("That is not a character you can play.\n");
+        -:   28:   }
+        4:   29:   return 0;
+        -:   30:}
+        -:   31:
+        1:   32:int executeEmote(void)
+        -:   33:{
+        1:   34:   const char *phrase = params[0];
+        1:   35:   if (*phrase == '\0')
+        -:   36:   {
+    #####:   37:      printf("I don't understand what you want to emote.\n");
+    #####:   38:   }
+        -:   39:   else
+        -:   40:   {
+        1:   41:      printf("You %s\n", phrase);
+        -:   42:   }
+        1:   43:   return 0;
+        -:   44:}
+        -:   45:
+        1:   46:int executeSay(void)
+        -:   47:{
+        1:   48:   const char *phrase = params[0];
+        1:   49:   if (*phrase == '\0')
+        -:   50:   {
+    #####:   51:      printf("I don't understand what you want to say.\n");
+    #####:   52:   }
+        -:   53:   else
+        -:   54:   {
+        1:   55:      printf("You say: %s\n", phrase);
+        -:   56:   }
+        1:   57:   return 0;
+        -:   58:}
+        -:   59:
+        1:   60:int executeWhisper(void)
+        -:   61:{
+        1:   62:   OBJECT *to = reachableObject("who to whisper to", params[1]);
+        1:   63:   if (to != NULL)
+        -:   64:   {
+        1:   65:      const char *phrase = params[0];
+        1:   66:      if (*phrase == '\0')
+        -:   67:      {
+    #####:   68:         printf("I don't understand what you want to whisper.\n");
+    #####:   69:      }
+        -:   70:      else
+        -:   71:      {
+        1:   72:         printf("You whisper to %s: %s\n", to->description, phrase);
+        -:   73:      }
+        1:   74:   }
+        1:   75:   return 0;
+        -:   76:}

@@ -1,0 +1,44 @@
+        -:    0:Source:expand.c
+        -:    0:Graph:expand.gcno
+        -:    0:Data:expand.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <string.h>
+        -:    3:#include "match.h"
+        -:    4:
+        -:    5:typedef struct
+        -:    6:{
+        -:    7:   const char *abbreviated;
+        -:    8:   const char *expanded;
+        -:    9:} SHORTHAND;
+        -:   10:
+    #####:   11:static int minimum(int x, int y)
+        -:   12:{
+    #####:   13:   return x < y ? x : y;
+        -:   14:}
+        -:   15:
+       15:   16:char *expand(char *input, int bufsize)
+        -:   17:{
+        -:   18:   static const SHORTHAND shorthands[] =
+        -:   19:   {
+        -:   20:      {"n", "go north"},
+        -:   21:      {"s", "go south"},
+        -:   22:      {"w", "go west"},
+        -:   23:      {"e", "go east"},
+        -:   24:      {"inv", "inventory"},
+        -:   25:      {"x A", "examine "},
+        -:   26:      {"A", NULL}
+        -:   27:   };
+        -:   28:   const SHORTHAND *sh;
+      105:   29:   for (sh = shorthands; !matchCommand(input, sh->abbreviated); sh++);
+       15:   30:   if (sh->expanded != NULL)
+        -:   31:   {
+    #####:   32:      const char *moreInput = *paramByLetter('A');
+    #####:   33:      int lengthOfExpanded = strlen(sh->expanded);
+    #####:   34:      memmove(input + lengthOfExpanded, moreInput,
+        -:   35:              minimum(strlen(moreInput) + 1, bufsize - lengthOfExpanded - 1));
+    #####:   36:      strncpy(input, sh->expanded, lengthOfExpanded);
+    #####:   37:   }
+       15:   38:   return input;
+        -:   39:}

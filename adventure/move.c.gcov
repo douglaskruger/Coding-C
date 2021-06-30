@@ -1,0 +1,86 @@
+        -:    0:Source:move.c
+        -:    0:Graph:move.gcno
+        -:    0:Data:move.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdbool.h>
+        -:    2:#include <stdio.h>
+        -:    3:#include "object.h"
+        -:    4:#include "misc.h"
+        -:    5:
+        2:    6:static int weightOfContents(OBJECT *container)
+        -:    7:{
+        2:    8:   int sum = 0;
+        -:    9:   OBJECT *obj;
+       66:   10:   for (obj = objs; obj < endOfObjs; obj++)
+        -:   11:   {
+       64:   12:      if (isHolding(container, obj)) sum += obj->weight;
+       64:   13:   }
+        2:   14:   return sum;
+        -:   15:}
+        -:   16:
+        2:   17:static void describeMove(OBJECT *obj, OBJECT *to)
+        -:   18:{
+        2:   19:   if (to == player->location)
+        -:   20:   {
+    #####:   21:      printf("You drop %s.\n", obj->description);
+    #####:   22:   }
+        2:   23:   else if (to != player)
+        -:   24:   {
+    #####:   25:      printf(to->health > 0 ? "You give %s to %s.\n" : "You put %s in %s.\n",
+    #####:   26:             obj->description, to->description);
+    #####:   27:   }
+        2:   28:   else if (obj->location == player->location)
+        -:   29:   {
+        2:   30:      printf("You pick up %s.\n", obj->description);
+        2:   31:   }
+        -:   32:   else
+        -:   33:   {
+    #####:   34:      printf("You get %s from %s.\n",
+    #####:   35:             obj->description, obj->location->description);
+        -:   36:   }
+        2:   37:}
+        -:   38:
+        2:   39:int moveObject(OBJECT *obj, OBJECT *to)
+        -:   40:{
+        2:   41:   if (obj == NULL)
+        -:   42:   {
+        -:   43:      // already handled by getVisible or getPossession
+    #####:   44:      return 0;
+        -:   45:   }
+        2:   46:   else if (to == NULL)
+        -:   47:   {
+    #####:   48:      printf("There is nobody here to give that to.\n");
+    #####:   49:      return 0;
+        -:   50:   }
+        2:   51:   else if (obj->location != NULL && obj->location != player &&
+        2:   52:            obj->location->health > 0 && obj->location->trust <= 0)
+        -:   53:   {
+    #####:   54:      printf("It seems %s feels reluctant to give you anything.\n",
+    #####:   55:             obj->location->description);
+    #####:   56:      return 1;
+        -:   57:   }
+        2:   58:   else if (to->capacity == 0)
+        -:   59:   {
+    #####:   60:      printf(obj == keyForBox && (to == closedBox || to == lockedBox) ?
+        -:   61:                "The key seems to fit the lock.\n" :
+        -:   62:                "It doesn't seem to fit in.\n");
+    #####:   63:      return 1;
+        -:   64:   }
+        2:   65:   else if (obj->weight > to->capacity)
+        -:   66:   {
+    #####:   67:      printf("That is way too heavy.\n");
+    #####:   68:      return 1;
+        -:   69:   }
+        2:   70:   else if (obj->weight + weightOfContents(to) > to->capacity)
+        -:   71:   {
+    #####:   72:      printf("That would become too heavy.\n");
+    #####:   73:      return 1;
+        -:   74:   }
+        -:   75:   else
+        -:   76:   {
+        2:   77:      describeMove(obj, to);
+        2:   78:      obj->location = to;
+        2:   79:      return 1;
+        -:   80:   }
+        2:   81:}

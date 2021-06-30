@@ -1,0 +1,80 @@
+File 'attack.c'
+Lines executed:55.00% of 20
+Creating 'attack.c.gcov'
+
+File 'damage.c'
+Lines executed:63.46% of 52
+Creating 'damage.c.gcov'
+
+File 'expand.c'
+Lines executed:36.36% of 11
+Creating 'expand.c.gcov'
+
+File 'inventory.c'
+Lines executed:23.08% of 26
+Creating 'inventory.c.gcov'
+
+File 'inventory2.c'
+Lines executed:0.00% of 45
+Creating 'inventory2.c.gcov'
+
+File 'location.c'
+Lines executed:15.00% of 40
+Creating 'location.c.gcov'
+
+File 'main.c'
+Lines executed:76.47% of 34
+Creating 'main.c.gcov'
+
+File 'match.c'
+Lines executed:100.00% of 37
+Creating 'match.c.gcov'
+
+File 'misc.c'
+Lines executed:63.16% of 57
+Creating 'misc.c.gcov'
+
+File 'move.c'
+Lines executed:56.82% of 44
+Creating 'move.c.gcov'
+
+File 'noun.c'
+Lines executed:41.27% of 63
+Creating 'noun.c.gcov'
+
+File 'object.c'
+Lines executed:100.00% of 3
+Creating 'object.c.gcov'
+
+File 'onoff.c'
+Lines executed:0.00% of 20
+Creating 'onoff.c.gcov'
+
+File 'openclose.c'
+Lines executed:0.00% of 16
+Creating 'openclose.c.gcov'
+
+File 'parsexec.c'
+Lines executed:38.46% of 13
+Creating 'parsexec.c.gcov'
+
+File 'reach.c'
+Lines executed:35.71% of 14
+Creating 'reach.c.gcov'
+
+File 'social.c'
+Lines executed:76.32% of 38
+Creating 'social.c.gcov'
+
+File 'talk.c'
+Lines executed:0.00% of 27
+Creating 'talk.c.gcov'
+
+File 'toggle.c'
+Lines executed:0.00% of 43
+Creating 'toggle.c.gcov'
+
+File 'turn.c'
+Lines executed:59.18% of 49
+Creating 'turn.c.gcov'
+
